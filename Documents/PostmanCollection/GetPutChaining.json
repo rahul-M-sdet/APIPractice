@@ -1,0 +1,118 @@
+{
+	"info": {
+		"_postman_id": "19f4355c-b807-4189-83c0-3712cf8777ae",
+		"name": "Get-Put Chaining",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14138065"
+	},
+	"item": [
+		{
+			"name": "GetTheUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const getuser = pm.response.json();\r",
+							"const userIds =getuser.map(user => user.id);\r",
+							"console.log(userIds);\r",
+							"\r",
+							"pm.variables.set(\"user_IDs\", userIds)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://gorest.co.in/public/v2/users",
+					"protocol": "https",
+					"host": [
+						"gorest",
+						"co",
+						"in"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const UserIDs =pm.variables.get(\"user_IDs\");\r",
+							"pm.variables.set(\"Ids\", UserIDs.shift());\r",
+							"if(Array.isArray(UserIDs) && UserIDs.length>0){\r",
+							"    pm.execution.setNextRequest(\"UpdateUser\");\r",
+							"\r",
+							"}\r",
+							"else{\r",
+							"    console.log(\"All the user are updated\");\r",
+							"\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{TokenID}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"name\":\"naveen automation labs\",\r\n \"status\":\"Active\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://gorest.co.in/public/v2/users/{{Ids}}",
+					"protocol": "https",
+					"host": [
+						"gorest",
+						"co",
+						"in"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users",
+						"{{Ids}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
